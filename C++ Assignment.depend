@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1743445502 source:c:\users\hp\documents\oop\c++ programming\c++ assignment\main.cpp
+	<iostream>
+
+1748569649 source:c:\users\hp\documents\oop\c++ programming\c++ assignment\flashcardasg.cpp
+	<iostream>
+	<vector>
+
