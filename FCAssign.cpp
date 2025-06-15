@@ -3,6 +3,7 @@
 #include <vector>       // to allow vector usage @ Flashcard_Deck
 #include <algorithm>    // for SORTcard
 #include <fstream>      // for file save/load
+#include <iomanip>      // for setprecision in Deck_Stats
 using namespace std;
 
 //FlashCard class
@@ -36,6 +37,7 @@ public:
     }
 };
 
+//manage the flashcard list
 class Flashcard_Deck {
 private:
     vector<Flashcard> cards;
@@ -74,18 +76,51 @@ public:
     }
 };
 
+// showcase the statistics of the user progression
+class Deck_Stats {
+public:
+    static void show(const Flashcard_Deck& deck) {
+        const auto& cards = deck.getCards();
+        if (cards.empty()) {
+            cout << "\n[Stats] Deck is empty.\n";
+            return;
+        }
+
+        int minScore = cards.front().getScore();
+        int maxScore = cards.front().getScore();
+        int total    = 0;
+
+        for (const auto& c : cards) {
+            int s = c.getScore();
+            minScore = min(minScore, s);
+            maxScore = max(maxScore, s);
+            total   += s;
+        }
+
+        double avg = static_cast<double>(total) / cards.size();
+
+        cout << "\n==========  DECK STATISTICS  ==========\n"
+             << "Total cards : " << cards.size() << '\n'
+             << "Lowest score: " << minScore     << '\n'
+             << "Highest score: " << maxScore    << '\n'
+             << "Average score: " << fixed << setprecision(2) << avg << '\n'
+             << "=======================================\n";
+    }
+};
+
+//responsible to save, load flashcards
 class File_Manager {
 public:
     static void saveFileIn(const vector<Flashcard>& cards, const string& fname) {
         ofstream outFile(fname);
         if (!outFile) {
-            cout << "Error: Unable to open file...\n";
+            cout << "Error: Unable to open file...\n"; //file checking
             return;
         }
 
         for (const Flashcard& card : cards) {
             outFile << card.getQues() << "|" << card.getAns() << "|" << card.getScore() << "\n";
-        }
+        } //format of saving flashcards
 
         outFile.close();
         cout << "Flashcards saved to " << fname << endl;
@@ -106,9 +141,9 @@ public:
 
             if (pos1 == string::npos || pos2 == string::npos || pos1 == pos2) continue;
 
-            string q = line.substr(0, pos1);
-            string a = line.substr(pos1 + 1, pos2 - pos1 - 1);
-            int s = stoi(line.substr(pos2 + 1));
+            string q = line.substr(0, pos1); //get the q
+            string a = line.substr(pos1 + 1, pos2 - pos1 - 1); //get the ans
+            int s = stoi(line.substr(pos2 + 1)); //get score
 
             Flashcard card(q, a);
             while (card.getScore() < s) card.UPDATEscore('Y');
@@ -208,6 +243,8 @@ public:
                         cout << "Score: " << card.getScore() << "\n";
                     }
                     cout << "\n****REACHED THE END OF THE FLASHCARD****\n";
+
+                    Deck_Stats::show(deck);   // show deck statistics
                     break;
                 }
 
@@ -252,6 +289,3 @@ int main() {
     return 0;
 }
 
-// ======================================================================
-//  End of file
-// ======================================================================
