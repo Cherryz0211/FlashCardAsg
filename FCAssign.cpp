@@ -52,7 +52,7 @@ public:
             return;
         }
 
-        cout << "\n\t\tFlashcard List:\n";
+        cout << "\n\tFlashcard List:\n";
 
         for (size_t i = 0; i < cards.size(); i++) {
             cout << (i + 1) << ". "
@@ -122,21 +122,32 @@ public:
         cout << "Loaded " << cards.size() << " flashcards from " << filename << endl;
         return cards;
     }
+
+    // load previously created flashcard
+    static void loadIntoDeck(Flashcard_Deck& deck, const string& fname) {
+        vector<Flashcard> loaded = loadFromFile(fname);
+        for (const auto& c : loaded) {
+            deck.ADDcard(c);
+        }
+    }
 };
 
 class Flashcard_App {
 private:
     Flashcard_Deck deck;
-    string filename = "flashcards.txt"; // FIX: define filename here
+    string filename = "flashcards.txt"; // keep default filename
 
 public:
     void run() {
+        //automatically preload existing flashcards
+        File_Manager::loadIntoDeck(deck, filename);
+
         int option;
 
         do {
             cout<< "\n------------------------------------------\n"
                 << "\t  FLASHCARD PROGRAM  \n"
-                << "-------------------------------------------\n"
+                << "--------------------------------------------\n"
                 << "1. Add flashcards\n"
                 << "2. Review/Test flashcards\n"
                 << "3. List all flashcards\n"
@@ -153,7 +164,7 @@ public:
                     string q, a, repeat;
 
                     cout << "___________________________________________\n";
-                    cout << "\n****ADDING FLASHCARDS****\n";
+                    cout << "\n\t****ADDING FLASHCARDS****\n";
 
                     do {
                         cout << "\nEnter Question: ";
@@ -179,7 +190,7 @@ public:
                     deck.SORTcard();
 
                     cout<< "___________________________________________\n"
-                        << "\n****VIEWING FLASHCARDS****\n";
+                        << "\n\t****VIEWING FLASHCARDS****\n";
 
                     for (Flashcard& card : deck.getCards()) {
                         cout << "\nQ: " << card.getQues() << endl;
@@ -197,7 +208,6 @@ public:
                         cout << "Score: " << card.getScore() << "\n";
                     }
                     cout << "\n****REACHED THE END OF THE FLASHCARD****\n";
-
                     break;
                 }
 
@@ -212,18 +222,14 @@ public:
                 case 5: {
                     deck = Flashcard_Deck(); // clear the current deck
 
-                    vector<Flashcard> loaded = File_Manager::loadFromFile(filename);
-                    for (const Flashcard& card : loaded) {
-                        deck.ADDcard(card);
-                    }
+                    File_Manager::loadIntoDeck(deck, filename); // reuse new helper
 
                     // Immediately show what was loaded
-                    cout<< "\n****LOADING FLASHCARDS****\n";
+                    cout<< "\n\t****LOADING FLASHCARDS****\n";
                     deck.LISTcard();
 
                     break;
                 }
-
 
                 case 6:
 
@@ -236,7 +242,7 @@ public:
                     cout << "Invalid option. Try again.\n";
             }
 
-        } while (option != 6);  // FIX: you had `!= 5`
+        } while (option != 6);
     }
 };
 
@@ -245,3 +251,7 @@ int main() {
     app.run();
     return 0;
 }
+
+// ======================================================================
+//  End of file
+// ======================================================================

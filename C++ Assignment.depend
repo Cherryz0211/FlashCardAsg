@@ -6,7 +6,10 @@
 	<iostream>
 	<vector>
 
-1749045491 source:c:\users\hp\documents\oop\c++ programming\c++ assignment\fcassign.cpp
+1749234930 source:c:\users\hp\documents\oop\c++ programming\c++ assignment\fcassign.cpp
 	<iostream>
 	<string>
+	<vector>
+	<algorithm>
+	<fstream>
 
