@@ -69,6 +69,9 @@ public:
         return cards;
     }
 
+    // NEW const version (read‑only access; lets Deck_Stats work)
+    const vector<Flashcard>& getCards() const { return cards; }
+
     void SORTcard() {
         sort(cards.begin(), cards.end(), [](const Flashcard& a, const Flashcard& b) {
             return a.getScore() < b.getScore();
